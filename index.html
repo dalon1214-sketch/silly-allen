@@ -1,0 +1,2582 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>이타서울 · 반려해변</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+      /* ════ 1. 기본 설정 및 색상 변수 ════ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      :root {
+        --font: "Noto Serif KR", Georgia, serif;
+        --foam: #7dd3c8;
+        --teal: #0e7490;
+        --teal-deep: #0a4a5e;
+        --midnight: #0b1929;
+        --deep-navy: #07111f;
+        --ocean: #0f2d4a;
+        --moonlight: #c8dde8;
+        --starlight: #e8f4f8;
+        --glass: rgba(14, 116, 144, 0.15);
+        --glass-border: rgba(125, 211, 200, 0.25);
+        --text-soft: #8ab5c8;
+        --text-muted: #4d7a8a;
+        --green: #1d9e75;
+        --amber: #e0a030;
+        --red: #e87070;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--deep-navy);
+        color: var(--starlight);
+        overflow-x: hidden;
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--deep-navy);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--teal-deep);
+        border-radius: 2px;
+      }
+
+      /* ════ 2. 네비게이션 ════ */
+      .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(7, 17, 31, 0.9);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(125, 211, 200, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        height: 60px;
+      }
+      .nav-logo {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--foam);
+        text-decoration: none;
+      }
+      .nav-links {
+        display: flex;
+        gap: 8px;
+      }
+      .nav-link {
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-family: var(--font);
+        font-size: 0.8rem;
+        color: var(--text-soft);
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .nav-link:hover,
+      .nav-link.active {
+        background: var(--glass);
+        color: var(--moonlight);
+      }
+      #soundBtn {
+        background: none;
+        border: 1px solid rgba(125, 211, 200, 0.2);
+        cursor: pointer;
+        border-radius: 20px;
+        padding: 5px 12px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--foam);
+        opacity: 0.7;
+        transition: all 0.2s;
+        font-family: var(--font);
+      }
+      #soundBtn:hover,
+      #soundBtn.playing {
+        border-color: rgba(125, 211, 200, 0.6);
+        opacity: 1;
+      }
+      .playing #soundIcon {
+        animation: sPulse 1.4s ease-in-out infinite;
+      }
+      @keyframes sPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
+
+      /* ════ 3. 히어로 & 감성 티커 ════ */
+      #hero-b2b {
+        position: relative;
+        width: 100%;
+        min-height: 75vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 100px 1.5rem 40px;
+        background: radial-gradient(
+          circle at center,
+          #0a2e4a 0%,
+          var(--deep-navy) 100%
+        );
+        overflow: hidden;
+      }
+      .letter-ticker {
+        position: absolute;
+        top: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 500px;
+        z-index: 28;
+        text-align: center;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+      }
+      .letter-ticker.show {
+        opacity: 1;
+      }
+      .ticker-text {
+        font-size: 0.95rem;
+        color: var(--moonlight);
+        font-weight: 300;
+        line-height: 1.65;
+        font-style: italic;
+      }
+      .ticker-from {
+        font-size: 0.7rem;
+        color: var(--foam);
+        margin-top: 0.5rem;
+        letter-spacing: 0.05em;
+        font-weight: 500;
+      }
+
+      .hero-badge {
+        font-size: 0.7rem;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: rgba(125, 211, 200, 0.15);
+        color: var(--foam);
+        border: 1px solid var(--glass-border);
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.1em;
+        margin-top: 40px;
+      }
+      .hero-title {
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
+        font-weight: 300;
+        line-height: 1.4;
+        color: var(--starlight);
+        margin-bottom: 1.2rem;
+      }
+      .hero-title strong {
+        font-weight: 700;
+        color: var(--foam);
+      }
+      .hero-sub {
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        color: var(--text-soft);
+        line-height: 1.6;
+        font-weight: 300;
+        max-width: 600px;
+        margin-bottom: 2.5rem;
+      }
+      .btn-primary {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        border-radius: 40px;
+        border: none;
+        color: var(--deep-navy);
+        font-family: var(--font);
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--foam), #5dcaa5);
+        box-shadow: 0 8px 24px rgba(93, 202, 165, 0.3);
+        transition: all 0.3s;
+      }
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(93, 202, 165, 0.5);
+      }
+
+      .btn-secondary {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        border-radius: 40px;
+        color: var(--starlight);
+        font-family: var(--font);
+        font-size: 0.95rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s;
+      }
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--foam);
+        color: var(--foam);
+      }
+
+      /* ════ 4. 공통 섹션 구조 ════ */
+      section {
+        position: relative;
+        padding: 6rem 1.5rem;
+        scroll-margin-top: 60px;
+      }
+      .sec-inner {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .sec-lbl {
+        font-size: 0.65rem;
+        letter-spacing: 0.25em;
+        color: var(--foam);
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        opacity: 0.8;
+      }
+      .sec-title {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 700;
+        line-height: 1.4;
+        color: var(--starlight);
+        margin-bottom: 0.8rem;
+      }
+      .sec-sub {
+        font-size: 0.95rem;
+        color: var(--text-soft);
+        line-height: 1.7;
+        font-weight: 300;
+        margin-bottom: 2rem;
+      }
+
+      /* ════ 5. 에코 레이더 (물그릇) ════ */
+      #forecast {
+        background: linear-gradient(180deg, var(--deep-navy) 0%, #07121d 100%);
+        padding-top: 4rem;
+      }
+      .fc-search {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+      }
+      .fc-search input {
+        flex: 1;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        padding: 1rem;
+        color: var(--starlight);
+        font-family: var(--font);
+        font-size: 0.9rem;
+        outline: none;
+      }
+      .fc-search input:focus {
+        border-color: var(--foam);
+      }
+      .fc-search button {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        padding: 0 1.5rem;
+        color: var(--foam);
+        cursor: pointer;
+        font-weight: 500;
+      }
+      .presets {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+      .preset {
+        background: none;
+        border: 1px solid var(--text-muted);
+        border-radius: 20px;
+        padding: 0.4rem 1rem;
+        color: var(--text-soft);
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .preset:hover,
+      .preset.active {
+        background: var(--glass);
+        color: var(--foam);
+        border-color: var(--foam);
+      }
+
+      .fc-card {
+        background: #0b1929;
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 2rem;
+      }
+      .fc-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-bottom: 1.5rem;
+      }
+      .fc-name {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--starlight);
+      }
+      .fc-my-spot {
+        font-size: 0.7rem;
+        background: var(--teal);
+        color: #fff;
+        padding: 2px 8px;
+        border-radius: 12px;
+        vertical-align: middle;
+        margin-left: 8px;
+      }
+      .fc-upd {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.4rem;
+      }
+      .fc-temp-big {
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: var(--foam);
+        line-height: 1;
+      }
+
+      .eco-banner {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid;
+      }
+      .eco-banner.clean {
+        background: rgba(29, 158, 117, 0.1);
+        border-color: rgba(29, 158, 117, 0.4);
+      }
+      .eco-banner.caution {
+        background: rgba(224, 160, 48, 0.1);
+        border-color: rgba(224, 160, 48, 0.4);
+      }
+      .eco-banner.alert {
+        background: rgba(200, 64, 64, 0.1);
+        border-color: rgba(200, 64, 64, 0.4);
+      }
+      .eco-icon {
+        font-size: 2rem;
+      }
+      .eco-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--starlight);
+        margin-bottom: 0.3rem;
+      }
+      .eco-desc {
+        font-size: 0.8rem;
+        color: var(--text-soft);
+        line-height: 1.5;
+      }
+
+      .fc-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 2rem;
+      }
+      .fc-item {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+      }
+      .fc-item-lbl {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+      }
+      .fc-item-val {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--starlight);
+      }
+
+      .act-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .act-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1.2rem;
+      }
+      .act-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+      }
+      .act-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--starlight);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .act-badge {
+        font-size: 0.7rem;
+        padding: 3px 10px;
+        border-radius: 12px;
+      }
+      .act-badge.great {
+        background: rgba(93, 202, 165, 0.2);
+        color: #5dcaa5;
+      }
+      .act-badge.good {
+        background: rgba(125, 211, 200, 0.2);
+        color: var(--foam);
+      }
+      .act-badge.hard {
+        background: rgba(232, 112, 112, 0.2);
+        color: #e87070;
+      }
+      .act-badge.okay {
+        background: rgba(240, 192, 80, 0.18);
+        color: #e8c060;
+      }
+      .act-desc {
+        font-size: 0.8rem;
+        color: var(--text-soft);
+        line-height: 1.5;
+      }
+
+      /* ════ 6. 이달의 수호자 (명예) ════ */
+      #crew-of-month {
+        background: linear-gradient(180deg, #07121d 0%, var(--deep-navy) 100%);
+        text-align: center;
+      }
+      .com-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+      }
+      .com-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #d4af37, #f3e5ab);
+      }
+      .com-crown {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+      .com-name {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #f3e5ab;
+        margin-bottom: 0.5rem;
+      }
+      .com-stats {
+        font-size: 0.9rem;
+        color: var(--starlight);
+        margin-bottom: 1.5rem;
+      }
+
+      /* ════ 7. 크루 룩북 (증거) ════ */
+      #showroom {
+        background: var(--deep-navy);
+      }
+      .lookbook-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 2rem;
+      }
+      @media (max-width: 600px) {
+        .lookbook-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .lb-card {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        aspect-ratio: 1/1;
+        background: var(--ocean);
+      }
+      .lb-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+      }
+      .lb-card:hover img {
+        transform: scale(1.05);
+      }
+      .lb-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(4, 13, 20, 0.9) 0%,
+          transparent 70%
+        );
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1rem;
+        opacity: 0.9;
+        transition: opacity 0.3s;
+      }
+      .lb-card:hover .lb-overlay {
+        opacity: 1;
+      }
+      .lb-loc {
+        font-size: 0.7rem;
+        color: var(--foam);
+        margin-bottom: 0.2rem;
+        font-weight: 700;
+      }
+      .lb-crew {
+        font-size: 0.85rem;
+        color: var(--starlight);
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+      }
+      .lb-desc {
+        font-size: 0.75rem;
+        color: var(--text-soft);
+        line-height: 1.4;
+        font-weight: 300;
+      }
+
+      /* ════ 8. 스팟 선점 & 혜택 쇼룸 (전환) ════ */
+      #spots {
+        background: linear-gradient(180deg, var(--deep-navy) 0%, #050d14 100%);
+      }
+      .spots-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.2rem;
+        margin-top: 2rem;
+      }
+      .spot-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        transition: all 0.3s;
+      }
+      .spot-card.available {
+        border-color: rgba(125, 211, 200, 0.3);
+        background: rgba(14, 116, 144, 0.1);
+      }
+      .spot-card.available:hover {
+        border-color: var(--foam);
+        box-shadow: 0 8px 24px rgba(125, 211, 200, 0.15);
+      }
+      .spot-card.taken {
+        opacity: 0.7;
+      }
+      .spot-card.taken::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--text-muted);
+      }
+      .spot-card.available::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--foam), #5dcaa5);
+      }
+      .spot-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+      .spot-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--starlight);
+      }
+      .spot-region {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.2rem;
+      }
+      .spot-desc {
+        font-size: 0.85rem;
+        color: var(--text-soft);
+        line-height: 1.5;
+        flex-grow: 1;
+        margin-bottom: 1.5rem;
+      }
+      .spot-cta {
+        display: block;
+        text-align: center;
+        padding: 1rem;
+        border-radius: 8px;
+        background: var(--glass);
+        color: var(--foam);
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-decoration: none;
+        border: 1px solid var(--foam);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .spot-cta:hover {
+        background: var(--foam);
+        color: var(--deep-navy);
+      }
+      .spot-cta-itacity {
+        display: block;
+        text-align: center;
+        padding: 1rem;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--starlight);
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: background 0.2s;
+      }
+      .spot-cta-itacity:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .showroom-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        justify-content: center;
+      }
+      .show-card {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 2rem 1.5rem;
+        text-align: center;
+      }
+      .show-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--starlight);
+        margin-bottom: 0.8rem;
+      }
+      .show-desc {
+        font-size: 0.85rem;
+        color: var(--text-soft);
+        line-height: 1.6;
+      }
+
+      /* ════ 9. 하단 미니게임 (여운) ════ */
+      #minigame {
+        position: relative;
+        width: 100%;
+        height: 50vh;
+        overflow: hidden;
+        background: linear-gradient(180deg, #050d14, #07111f);
+        cursor: pointer;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        transition: background 1.5s ease;
+      }
+      #minigame.theme-day {
+        background: linear-gradient(180deg, #1276b5, #2a9fd4 50%, #45bfe8);
+      }
+      #minigame.theme-sunset {
+        background: linear-gradient(
+          180deg,
+          #0c0828,
+          #8b2060 40%,
+          #d04020 70%,
+          #f08030
+        );
+      }
+      #minigame.theme-night {
+        background: linear-gradient(180deg, #050d14, #07111f);
+      }
+
+      .mg-overlay {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 40;
+        pointer-events: none;
+        text-align: center;
+        width: 100%;
+      }
+      .mg-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--foam);
+        margin-bottom: 0.4rem;
+      }
+      .mg-sub {
+        font-size: 0.85rem;
+        color: var(--moonlight);
+        font-weight: 300;
+      }
+      .wave-layer {
+        position: absolute;
+        width: 200%;
+        left: 0;
+        pointer-events: none;
+      }
+      .wv1 {
+        animation: wm1 9s linear infinite;
+        opacity: 0.95;
+        bottom: 26%;
+        height: 70px;
+      }
+      .wv2 {
+        animation: wm2 14s linear infinite;
+        opacity: 0.65;
+        bottom: 23%;
+        height: 55px;
+      }
+      .wv3 {
+        animation: wm3 20s linear infinite;
+        opacity: 0.38;
+        bottom: 20%;
+        height: 44px;
+      }
+      @keyframes wm1 {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      @keyframes wm2 {
+        0% {
+          transform: translateX(-8%);
+        }
+        100% {
+          transform: translateX(-58%);
+        }
+      }
+      @keyframes wm3 {
+        0% {
+          transform: translateX(-16%);
+        }
+        100% {
+          transform: translateX(-66%);
+        }
+      }
+      .water-body {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 28%;
+        background: linear-gradient(180deg, #0a3050, #051525);
+        z-index: 0;
+      }
+      .surfer {
+        position: absolute;
+        left: 50%;
+        font-size: 2.4rem;
+        z-index: 20;
+        transform: translateX(-50%);
+        pointer-events: none;
+        animation: surferBob 3.2s ease-in-out infinite;
+      }
+      @keyframes surferBob {
+        0%,
+        100% {
+          transform: translateX(-50%) rotate(-3deg);
+        }
+        50% {
+          transform: translateX(-50%) rotate(3deg) translateY(-3px);
+        }
+      }
+      .gauge-wrap {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 240px;
+        z-index: 30;
+        bottom: 40%;
+      }
+      .gauge-track {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        position: relative;
+      }
+      .gauge-fill {
+        height: 100%;
+        border-radius: 3px;
+        width: 0%;
+        background: linear-gradient(90deg, #1d9e75, #5dcaa5);
+      }
+      .gauge-perfect {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        background: rgba(93, 202, 165, 0.4);
+        border-radius: 3px;
+        left: 64%;
+        width: 14%;
+      }
+      .result-pop {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.1rem;
+        color: var(--starlight);
+        opacity: 0;
+        z-index: 31;
+        font-weight: 700;
+        text-align: center;
+      }
+      .result-pop.show {
+        animation: rPop 1.5s ease forwards;
+      }
+      @keyframes rPop {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.7);
+        }
+        15% {
+          opacity: 1;
+          transform: translate(-50%, -60%) scale(1.1);
+        }
+        85% {
+          opacity: 1;
+          transform: translate(-50%, -60%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -70%) scale(0.9);
+        }
+      }
+
+      /* 10. 유리병 버튼 및 말풍선 */
+      .bottle-btn {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 50;
+        cursor: pointer;
+        transition: transform 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .bottle-btn:hover {
+        transform: scale(1.1) rotate(-10deg);
+      }
+      .speech-bubble {
+        position: absolute;
+        bottom: 110%;
+        left: 50%;
+        transform: translateX(-20%);
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--deep-navy);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        pointer-events: none;
+        animation: floatBubble 3s ease-in-out infinite;
+      }
+      .speech-bubble::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 20%;
+        border-width: 6px 6px 0;
+        border-style: solid;
+        border-color: rgba(255, 255, 255, 0.95) transparent transparent
+          transparent;
+      }
+      @keyframes floatBubble {
+        0%,
+        100% {
+          transform: translate(-20%, 0);
+        }
+        50% {
+          transform: translate(-20%, -5px);
+        }
+      }
+      .theme-btn {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        backdrop-filter: blur(8px);
+      }
+      .theme-btn:hover,
+      .theme-btn.active {
+        border-color: rgba(125, 211, 200, 0.55);
+        transform: scale(1.15);
+      }
+
+      /* ════ 11. 모달창 ════ */
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 9000;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        padding: 1.5rem;
+      }
+      .modal.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal-inner {
+        background: #07121d;
+        border: 1px solid var(--foam);
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        max-width: 440px;
+        width: 100%;
+        position: relative;
+      }
+      .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .modal-close:hover {
+        color: #fff;
+      }
+      .fg {
+        margin-bottom: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .fg label {
+        font-size: 0.8rem;
+        color: var(--foam);
+        font-weight: 700;
+      }
+      .fg input,
+      .fg textarea {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px;
+        border-radius: 8px;
+        color: #fff;
+        font-family: var(--font);
+        font-size: 0.9rem;
+        outline: none;
+        transition: border-color 0.3s;
+        resize: none;
+      }
+      .fg input:focus,
+      .fg textarea:focus {
+        border-color: var(--foam);
+      }
+
+      .board-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin-bottom: 10px;
+      }
+      .board-text {
+        font-size: 0.95rem;
+        color: var(--starlight);
+        line-height: 1.6;
+        margin-bottom: 0.8rem;
+        font-style: italic;
+      }
+      .board-from {
+        font-size: 0.75rem;
+        color: var(--foam);
+        text-align: right;
+        font-weight: 500;
+      }
+
+      /* ════ 12. 푸터 ════ */
+      footer {
+        background: #03080d;
+        padding: 3rem 1.5rem;
+        text-align: center;
+      }
+      .foot-logo {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--foam);
+        margin-bottom: 1rem;
+      }
+      .foot-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .foot-links a {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .foot-links a:hover {
+        color: var(--starlight);
+      }
+
+      @media (max-width: 768px) {
+        .fc-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .act-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <a href="#" class="nav-logo">모두의 반려해변</a>
+      <div class="nav-links">
+        <a href="#forecast" class="nav-link">해변날씨</a>
+        <a href="#showroom" class="nav-link">바다사진</a>
+        <a href="#crew-of-month" class="nav-link">이달의수호자</a>
+        <a
+          href="#spots"
+          class="nav-link"
+          style="color: var(--foam); font-weight: 700"
+          >입양하기</a
+        >
+      </div>
+      <button id="soundBtn" onclick="toggleSound()">
+        <span id="soundIcon">🔇</span
+        ><span style="font-size: 0.72rem; letter-spacing: 0.04em"
+          >파도소리</span
+        >
+      </button>
+    </nav>
+
+    <section id="hero-b2b">
+      <div class="letter-ticker" id="letterTicker">
+        <div class="ticker-text" id="tickerText">
+          "오늘 파도 차피했지만 꿀잼. 폐그물 하나 건져갑니다 🤙"
+        </div>
+        <div class="ticker-from" id="tickerFrom">
+          📍 양양 죽도해변 | 서퍼스파라다이스 크루
+        </div>
+      </div>
+
+      <div class="hero-badge" style="margin-top: 60px">
+        해양수산부 장관 표창 NPO 이타서울
+      </div>
+      <h1 class="hero-title">
+        바다를 가장 잘 아는<br /><strong>여러분의 힘이 필요합니다</strong>
+      </h1>
+      <p class="hero-sub">
+        함께 해변을 입양하고, 여러분의 이름으로 바다를 지켜주세요.<br />가장
+        뜻깊은 레저 문화가 시작됩니다.
+      </p>
+
+      <div
+        style="
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          margin-top: 1rem;
+          flex-wrap: wrap;
+        "
+      >
+        <a href="#spots" class="btn-primary">입양하기</a>
+        <a href="#minigame" class="btn-secondary">✍️ 오늘 바다 기록 남기기</a>
+      </div>
+    </section>
+
+    <section id="forecast">
+      <div class="sec-inner">
+        <h2 class="sec-title">오늘의 해변 날씨는?</h2>
+        <p class="sec-sub">
+          서퍼/다이버를 위한 해양 기상과 환경 지수. 즐겨찾기로 매일
+          확인하세요.<br />
+          <span style="font-size: 0.6rem; color: var(--text-muted)"
+            >※ 오픈메테오(Open-Meteo) 기반 참고용 데이터입니다. 실제 파도 상황은
+            윈디(Windy)나 현장 웹캠과 교차 확인을 권장합니다.</span
+          >
+        </p>
+
+        <div class="fc-search">
+          <input
+            type="text"
+            id="fcInput"
+            placeholder="해변 이름 검색 (예: 양양 죽도, 제주 협재)"
+          />
+          <button onclick="searchFC()">검색</button>
+        </div>
+        <div class="presets" id="presetBox"></div>
+
+        <div class="fc-card" id="fcCard">
+          <div class="fc-top">
+            <div>
+              <div class="fc-name">
+                <span id="fcName">양양 죽도해변</span
+                ><span class="fc-my-spot" id="mySpotBadge" style="display: none"
+                  >★ My Spot</span
+                >
+              </div>
+              <div class="fc-upd" id="fcUpd">실시간 데이터 연동 중...</div>
+            </div>
+            <div style="text-align: right">
+              <div class="fc-temp-big" id="fcTemp">22°C</div>
+            </div>
+          </div>
+
+          <div class="eco-banner" id="ecoBanner">
+            <span class="eco-icon" id="ecoIcon">🌊</span>
+            <div>
+              <div class="eco-title" id="ecoTitle">환경 컨디션 분석 중...</div>
+              <div class="eco-desc" id="ecoDesc">...</div>
+            </div>
+          </div>
+
+          <div class="fc-grid">
+            <div class="fc-item">
+              <div class="fc-item-lbl">파고</div>
+              <div class="fc-item-val" id="fcWH">1.2m</div>
+            </div>
+            <div class="fc-item">
+              <div class="fc-item-lbl">주기</div>
+              <div class="fc-item-val" id="fcPer">8초</div>
+            </div>
+            <div class="fc-item">
+              <div class="fc-item-lbl">바람</div>
+              <div class="fc-item-val" id="fcWnd">4m/s</div>
+            </div>
+            <div class="fc-item">
+              <div class="fc-item-lbl">날씨</div>
+              <div class="fc-item-val" id="fcWIcon">☀️</div>
+            </div>
+          </div>
+
+          <div class="act-grid">
+            <div class="act-card">
+              <div class="act-head">
+                <span class="act-name">🏄 서핑</span
+                ><span class="act-badge" id="badgeSurf">분석중</span>
+              </div>
+              <div class="act-desc" id="descSurf">...</div>
+            </div>
+            <div class="act-card">
+              <div class="act-head">
+                <span class="act-name">🤿 다이빙</span
+                ><span class="act-badge" id="badgeDive">분석중</span>
+              </div>
+              <div class="act-desc" id="descDive">
+                파고 데이터로 입수 가능 여부를 판단합니다.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            margin-top: 1.5rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 1.5rem;
+          "
+        >
+          <button
+            id="btnCapture"
+            onclick="captureForecast()"
+            style="
+              background: rgba(125, 211, 200, 0.15);
+              border: 1px solid var(--foam);
+              color: var(--foam);
+              padding: 12px 24px;
+              border-radius: 30px;
+              font-weight: 700;
+              cursor: pointer;
+              transition: all 0.2s;
+              font-family: var(--font);
+              font-size: 0.9rem;
+            "
+          >
+            📸 오늘 예보 인스타 스토리에 공유하기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="crew-of-month">
+      <div class="sec-inner">
+        <p class="sec-lbl">Hall of Fame</p>
+        <h2 class="sec-title">이달의 바다 수호자</h2>
+        <p class="sec-sub">
+          지난달 가장 꾸준히 반려해변을 돌봐주신 팀입니다. 진심으로
+          감사드립니다!
+        </p>
+        <div class="com-card">
+          <span class="com-crown">👑</span>
+          <div class="com-name">블루다이브 팀 (Blue Dive)</div>
+          <div class="com-stats">
+            📍 제주 협재해수욕장 | 🗑️ 누적 수거량 120kg 달성
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="showroom">
+      <div class="sec-inner">
+        <p class="sec-lbl">Crew Highlights</p>
+        <h2 class="sec-title">해변을 잇는 발걸음들</h2>
+        <p class="sec-sub">
+          더 맑은 생태계를 위해 오늘을 기록한 크루들의 모습입니다.
+        </p>
+        <div class="lookbook-grid" id="lookbookGrid"></div>
+      </div>
+    </section>
+
+    <section id="spots">
+      <div class="sec-inner" style="max-width: 1000px">
+        <p class="sec-lbl">Flag Planting</p>
+        <h2 class="sec-title">누가 먼저 이 바다를 차지할 것인가</h2>
+        <p class="sec-sub">여러분이 아끼는 해변을 늦기 전에 입양하세요.</p>
+        <div class="spots-grid" id="spotsList"></div>
+
+        <div
+          style="
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(125, 211, 200, 0.12);
+          "
+        >
+          <p
+            style="
+              font-size: 0.7rem;
+              letter-spacing: 0.2em;
+              color: var(--foam);
+              text-transform: uppercase;
+              margin-bottom: 1.2rem;
+              opacity: 0.7;
+            "
+          >
+            입양하면 받는 것들 & 지켜야 할 것들
+          </p>
+          <div class="showroom-grid">
+            <div class="show-card">
+              <div class="show-title">🏄‍♀️ 부담 없는 룰 (Soft-rule)</div>
+              <div class="show-desc">
+                매주 의무적으로 갈 필요 없어요.
+                <b>한 달에 한 번, 우리가 타는 바다에서 잠깐</b> 쓸어담아도
+                훌륭한 수호자입니다.
+              </div>
+            </div>
+            <div class="show-card">
+              <div class="show-title">📱 인스타 성과 카드</div>
+              <div class="show-desc">
+                매월 이타시티 데이터를 바탕으로, 인스타그램에 올리기 좋은
+                <b>세련된 성과 카드 이미지</b>를 제작해 보내드립니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="minigame">
+      <div class="mg-overlay">
+        <div class="mg-title">💌 바다에 편지 띄우기</div>
+        <div class="mg-sub" id="mgSubText">
+          타이밍에 맞춰 부유물을 건져내면 바다에 편지를 띄울 수 있어요 (화면 탭)
+        </div>
+      </div>
+
+      <svg
+        class="wave-layer wv1"
+        viewBox="0 0 1440 70"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,35 C240,62 480,8 720,35 C960,62 1200,8 1440,35 L1440,70 L0,70 Z"
+          fill="#0e4a6e"
+        />
+      </svg>
+      <svg
+        class="wave-layer wv2"
+        viewBox="0 0 1440 55"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,27 C200,48 400,6 600,27 C800,48 1000,6 1200,22 C1320,32 1390,22 1440,27 L1440,55 L0,55 Z"
+          fill="#0a3a58"
+        />
+      </svg>
+      <svg
+        class="wave-layer wv3"
+        viewBox="0 0 1440 44"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,22 C360,40 720,4 1080,22 C1260,31 1390,17 1440,22 L1440,44 L0,44 Z"
+          fill="#071e30"
+        />
+      </svg>
+      <div class="water-body"></div>
+
+      <div class="surfer" id="surfer" style="bottom: 27%">🚣</div>
+      <div class="result-pop" id="resultPop"></div>
+      <div class="gauge-wrap">
+        <div class="gauge-track">
+          <div class="gauge-perfect"></div>
+          <div class="gauge-fill" id="gaugeFill"></div>
+        </div>
+      </div>
+
+      <div
+        id="themeBar"
+        style="
+          position: absolute;
+          bottom: 20px;
+          right: 20px;
+          z-index: 50;
+          display: flex;
+          gap: 8px;
+        "
+      >
+        <button
+          class="theme-btn active"
+          data-theme="day"
+          onclick="setMgTheme('day')"
+          title="낮"
+        >
+          ☀️
+        </button>
+        <button
+          class="theme-btn"
+          data-theme="sunset"
+          onclick="setMgTheme('sunset')"
+          title="노을"
+        >
+          🌅
+        </button>
+        <button
+          class="theme-btn"
+          data-theme="night"
+          onclick="setMgTheme('night')"
+          title="밤"
+        >
+          🌙
+        </button>
+      </div>
+
+      <div
+        class="bottle-btn"
+        onclick="openMessageBoard(event)"
+        title="크루들의 이야기 보기"
+      >
+        <div class="speech-bubble">더보기👀</div>
+        <svg
+          width="36"
+          height="58"
+          viewBox="0 0 36 58"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="bG" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#a8dde8" stop-opacity=".45" />
+              <stop offset="35%" stop-color="#e8f7fa" stop-opacity=".65" />
+              <stop offset="65%" stop-color="#c2eaf2" stop-opacity=".45" />
+              <stop offset="100%" stop-color="#7bbfcc" stop-opacity=".4" />
+            </linearGradient>
+            <linearGradient id="nG2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#90cdd8" stop-opacity=".5" />
+              <stop offset="40%" stop-color="#daf2f7" stop-opacity=".7" />
+              <stop offset="100%" stop-color="#7bbfcc" stop-opacity=".4" />
+            </linearGradient>
+            <linearGradient id="cG2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c89a5a" />
+              <stop offset="50%" stop-color="#a8783a" />
+              <stop offset="100%" stop-color="#8a6028" />
+            </linearGradient>
+            <linearGradient id="sG2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity=".5" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+            </linearGradient>
+            <clipPath id="bClip">
+              <rect x="5" y="20" width="26" height="34" rx="7" />
+            </clipPath>
+          </defs>
+          <rect x="13" y="2" width="10" height="9" rx="2.5" fill="url(#cG2)" />
+          <line
+            x1="13"
+            y1="4.5"
+            x2="23"
+            y2="4.5"
+            stroke="#7a5020"
+            stroke-width=".7"
+            opacity=".5"
+          />
+          <line
+            x1="13"
+            y1="7"
+            x2="23"
+            y2="7"
+            stroke="#7a5020"
+            stroke-width=".7"
+            opacity=".5"
+          />
+          <rect
+            x="14"
+            y="2.5"
+            width="4"
+            height="3"
+            rx="1"
+            fill="#d4a86a"
+            opacity=".6"
+          />
+          <rect x="12" y="10" width="12" height="11" rx="2" fill="url(#nG2)" />
+          <rect
+            x="12"
+            y="10"
+            width="12"
+            height="11"
+            rx="2"
+            fill="none"
+            stroke="#a0d4df"
+            stroke-width=".8"
+            opacity=".55"
+          />
+          <rect
+            x="13.5"
+            y="10.5"
+            width="3"
+            height="9"
+            rx="1"
+            fill="url(#sG2)"
+            opacity=".65"
+          />
+          <path d="M12,20 Q8,21 5,25 L31,25 Q28,21 24,20 Z" fill="url(#bG)" />
+          <rect x="5" y="24" width="26" height="30" rx="7" fill="url(#bG)" />
+          <rect
+            x="5"
+            y="24"
+            width="26"
+            height="30"
+            rx="7"
+            fill="none"
+            stroke="#8ecad6"
+            stroke-width=".85"
+            opacity=".6"
+          />
+          <g clip-path="url(#bClip)" opacity=".88">
+            <rect
+              x="11.5"
+              y="28"
+              width="13"
+              height="19"
+              rx="2"
+              fill="#e8d5a8"
+              opacity=".92"
+            />
+            <ellipse
+              cx="18"
+              cy="28.5"
+              rx="6.5"
+              ry="2"
+              fill="#d4bc88"
+              opacity=".7"
+            />
+            <line
+              x1="13"
+              y1="32"
+              x2="23"
+              y2="32"
+              stroke="#9a7850"
+              stroke-width=".8"
+              opacity=".5"
+            />
+            <line
+              x1="13"
+              y1="34.5"
+              x2="22"
+              y2="34.5"
+              stroke="#9a7850"
+              stroke-width=".8"
+              opacity=".5"
+            />
+            <line
+              x1="13"
+              y1="37"
+              x2="23"
+              y2="37"
+              stroke="#9a7850"
+              stroke-width=".8"
+              opacity=".5"
+            />
+            <line
+              x1="13"
+              y1="39.5"
+              x2="20"
+              y2="39.5"
+              stroke="#9a7850"
+              stroke-width=".8"
+              opacity=".4"
+            />
+            <ellipse
+              cx="18"
+              cy="47"
+              rx="6.5"
+              ry="1.8"
+              fill="#d4bc88"
+              opacity=".6"
+            />
+          </g>
+          <rect
+            x="7.5"
+            y="25"
+            width="3"
+            height="22"
+            rx="1.5"
+            fill="url(#sG2)"
+            opacity=".45"
+          />
+          <ellipse
+            cx="18"
+            cy="54.5"
+            rx="11"
+            ry="2.2"
+            fill="#6ab8c8"
+            opacity=".25"
+          />
+        </svg>
+      </div>
+    </section>
+
+    <footer>
+      <div class="foot-logo">이타서울 · 모두의 반려해변</div>
+      <div class="foot-links">
+        <a href="https://blog.naver.com/itaseoul/224231410023" target="_blank"
+          >반려해변 입양 안내</a
+        >
+        <a href="https://www.instagram.com/itaseoul" target="_blank"
+          >이타서울 인스타그램</a
+        >
+      </div>
+      <p style="font-size: 0.75rem; color: var(--text-muted)">
+        © ITASEOUL NPO. All rights reserved.
+      </p>
+    </footer>
+
+    <div class="modal" id="crewModal">
+      <div class="modal-inner">
+        <button
+          class="modal-close"
+          onclick="document.getElementById('crewModal').classList.remove('open')"
+        >
+          ✕
+        </button>
+        <h3 style="color: #fff; margin-bottom: 1.5rem">🚩 입양하기</h3>
+
+        <p
+          style="
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+          "
+        >
+          해변 입양, 거창하지 않아요!
+          <b>한 달에 한 번, 우리가 타는 바다에서 잠깐</b> 쓸어담아도 훌륭한
+          수호자입니다.<br />크루의 라이프스타일에 딱 맞는 활동 가이드를 제안해
+          드릴게요.
+        </p>
+
+        <div class="fg">
+          <label>크루/단체 이름</label
+          ><input type="text" placeholder="예: 블루다이브 팀" />
+        </div>
+        <div class="fg">
+          <label>입양 희망 해변</label
+          ><input type="text" placeholder="예: 제주 협재해수욕장" />
+        </div>
+        <div class="fg">
+          <label>연락처 (인스타ID 또는 이메일)</label
+          ><input type="text" placeholder="@instagram_id 또는 이메일" />
+        </div>
+        <button
+          class="btn-primary"
+          style="width: 100%; margin-top: 1rem"
+          onclick="alert('✅ 접수 완료! 크루 맞춤형 활동 가이드를 들고 파트너 매니저가 곧 연락드립니다. 🤙'); document.getElementById('crewModal').classList.remove('open');"
+        >
+          우리 크루 공식 파트너 등록하기
+        </button>
+      </div>
+    </div>
+
+    <div class="modal" id="letterModal">
+      <div class="modal-inner">
+        <button
+          class="modal-close"
+          onclick="document.getElementById('letterModal').classList.remove('open')"
+        >
+          ✕
+        </button>
+        <h3 style="color: #fff; margin-bottom: 1rem">
+          💌 바다에 이야기 남기기
+        </h3>
+        <p
+          style="
+            font-size: 0.85rem;
+            color: var(--foam);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+          "
+        >
+          작성하신 글은 모두의 반려해변으로 흘러가며 바다를 사랑하는 사람들에게
+          공유됩니다.
+        </p>
+        <div class="fg">
+          <label>어느 해변에서?</label
+          ><input type="text" id="lBeach" placeholder="예: 양양 죽도해변" />
+        </div>
+        <div class="fg">
+          <label>크루 이름 (선택)</label
+          ><input
+            type="text"
+            id="lCrew"
+            placeholder="예: 서퍼스파라다이스 크루"
+          />
+        </div>
+        <div class="fg">
+          <label>바다에 남기는 한마디</label
+          ><textarea
+            id="lMsg"
+            rows="3"
+            placeholder="오늘 파도 어땠나요? 바다에게 하고 싶은 말은?"
+          ></textarea>
+        </div>
+        <button
+          class="btn-primary"
+          style="width: 100%; margin-top: 1rem"
+          onclick="submitLetter()"
+        >
+          바다에 띄워 보내기 🌊
+        </button>
+
+        <div
+          id="mgSkipWrap"
+          style="
+            margin-top: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            opacity: 0.7;
+          "
+        >
+          <input
+            type="checkbox"
+            id="mgSkipToday"
+            style="cursor: pointer; accent-color: var(--foam)"
+            onchange="handleMgSkip(this)"
+          />
+          <label
+            for="mgSkipToday"
+            style="
+              font-size: 0.8rem;
+              color: var(--foam);
+              cursor: pointer;
+              letter-spacing: 0.04em;
+              font-weight: 500;
+            "
+            >오늘 편지창 그만 보기 (게임만 즐기기)</label
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="boardModal">
+      <div
+        class="modal-inner"
+        style="
+          max-height: 85vh;
+          display: flex;
+          flex-direction: column;
+          padding: 1.8rem 1.5rem;
+        "
+      >
+        <button
+          class="modal-close"
+          onclick="document.getElementById('boardModal').classList.remove('open')"
+        >
+          ✕
+        </button>
+        <h3 style="color: #fff; margin-bottom: 0.4rem">
+          🍾 바다에 띄워진 이야기들
+        </h3>
+
+        <p
+          style="
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+          "
+        >
+          크루들이 유리병에 담아 바다에 띄운 기록입니다.<br />
+          <span
+            style="
+              color: var(--foam);
+              font-weight: 700;
+              display: inline-block;
+              margin-top: 6px;
+              padding: 6px 10px;
+              background: rgba(125, 211, 200, 0.1);
+              border-radius: 8px;
+            "
+          >
+            💡 우리 크루의 기록이 5번 쌓이면, 이타서울이 공식 파트너십(입양)을
+            먼저 제안해 드립니다!
+          </span>
+        </p>
+
+        <div
+          style="
+            display: flex;
+            gap: 6px;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0.8rem;
+          "
+        >
+          <button
+            id="tabList"
+            onclick="switchBoardTab('list')"
+            style="
+              background: var(--teal);
+              border: none;
+              border-radius: 16px;
+              padding: 5px 14px;
+              color: #fff;
+              font-size: 0.78rem;
+              cursor: pointer;
+              font-family: var(--font);
+            "
+          >
+            이야기 보기
+          </button>
+          <button
+            id="tabWrite"
+            onclick="switchBoardTab('write')"
+            style="
+              background: rgba(255, 255, 255, 0.08);
+              border: none;
+              border-radius: 16px;
+              padding: 5px 14px;
+              color: var(--text-soft);
+              font-size: 0.78rem;
+              cursor: pointer;
+              font-family: var(--font);
+            "
+          >
+            ✍️ 직접 남기기
+          </button>
+        </div>
+
+        <div
+          id="boardListPane"
+          style="overflow-y: auto; flex: 1; padding-right: 4px"
+        >
+          <div id="boardList"></div>
+        </div>
+
+        <div
+          id="boardWritePane"
+          style="display: none; flex-direction: column; gap: 0.9rem"
+        >
+          <div class="fg">
+            <label>어느 해변에서?</label
+            ><input type="text" id="bBeach" placeholder="예: 양양 죽도해변" />
+          </div>
+          <div class="fg">
+            <label>크루 이름 (선택)</label
+            ><input
+              type="text"
+              id="bCrew"
+              placeholder="예: 서퍼스파라다이스 크루"
+            />
+          </div>
+          <div class="fg">
+            <label>바다에 남기는 한마디</label
+            ><textarea
+              id="bMsg"
+              rows="3"
+              placeholder="오늘 파도 어땠나요? 바다에 하고 싶은 말을 남겨주세요"
+            ></textarea>
+          </div>
+          <button
+            class="btn-primary"
+            style="width: 100%"
+            onclick="submitBoardLetter()"
+          >
+            유리병에 담아 띄우기 🍾
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ════ 공통 스크립트 ════ */
+      function $id(i) {
+        return document.getElementById(i);
+      }
+      function rnd(a, b) {
+        return Math.random() * (b - a) + a;
+      }
+
+      // 스크롤 네비게이션
+      const navSections = ["hero-b2b", "forecast", "crew-of-month", "spots"];
+      window.addEventListener("scroll", () => {
+        const y = window.scrollY + 80;
+        navSections.forEach((id) => {
+          const el = $id(id);
+          if (el && y >= el.offsetTop && y < el.offsetTop + el.offsetHeight) {
+            document.querySelectorAll(".nav-link").forEach((a) => {
+              a.classList.toggle("active", a.getAttribute("href") === `#${id}`);
+            });
+          }
+        });
+      });
+
+      /* ════ 에코 레이더 (날씨 API 연동) ════ */
+      const BEACHES = {
+        "양양 죽도해변": { region: "east", lat: 38.074, lon: 128.614 },
+        "제주 협재해수욕장": { region: "jeju", lat: 33.394, lon: 126.239 },
+        "포항 신항만": { region: "east", lat: 35.989, lon: 129.361 },
+        "태안 만리포": { region: "west", lat: 36.792, lon: 126.133 },
+        "부산 송정해변": { region: "south", lat: 35.181, lon: 129.2 },
+      };
+      const PRESETS = Object.keys(BEACHES);
+      let mySpot = localStorage.getItem("ita_my_spot") || "양양 죽도해변";
+
+      function initPresets() {
+        const box = $id("presetBox");
+        box.innerHTML = "";
+        PRESETS.forEach((b) => {
+          const btn = document.createElement("button");
+          btn.className = `preset ${b === mySpot ? "active" : ""}`;
+          btn.innerHTML = b === mySpot ? `★ ${b}` : b;
+          btn.onclick = () => loadFC(b, BEACHES[b]);
+          box.appendChild(btn);
+        });
+      }
+
+      function searchFC() {
+        const q = $id("fcInput").value.trim();
+        for (const [n, d] of Object.entries(BEACHES)) {
+          if (n.includes(q)) {
+            loadFC(n, d);
+            return;
+          }
+        }
+        alert(
+          "해당 해변의 데이터가 없습니다. 아래 버튼 리스트를 이용해주세요."
+        );
+      }
+
+      function setLoading() {
+        ["fcWH", "fcPer", "fcWnd", "fcWIcon", "fcTemp"].forEach((id) => {
+          const el = $id(id);
+          if (el) el.textContent = "···";
+        });
+        ["badgeSurf", "badgeDive", "badgePlog"].forEach((id) => {
+          const el = $id(id);
+          if (el) {
+            el.textContent = "로딩중";
+            el.className = "act-badge";
+          }
+        });
+        ["descSurf", "descDive", "descPlog"].forEach((id) => {
+          const el = $id(id);
+          if (el) el.textContent = "";
+        });
+        const banner = $id("ecoBanner");
+        if (banner) {
+          banner.className = "eco-banner caution";
+          $id("ecoIcon").textContent = "⏳";
+          $id("ecoTitle").textContent = "데이터 수집 중...";
+          $id("ecoDesc").textContent =
+            "Open-Meteo 해양 기상 API에서 실측 데이터를 가져오고 있습니다.";
+        }
+      }
+
+      function getSurfGrade(wh) {
+        if (wh === null) return { grade: "unknown", text: "데이터 없음" };
+        if (wh < 0.3)
+          return {
+            grade: "hard",
+            text: "장판입니다. 패들링 연습이나 줍깅 추천.",
+          };
+        if (wh < 0.8)
+          return {
+            grade: "good",
+            text: "부드러운 파도. 롱보더·입문자에게 좋은 날.",
+          };
+        if (wh < 1.5)
+          return {
+            grade: "great",
+            text: "서핑하기 딱 좋은 파도예요. 펀서핑 가시죠!",
+          };
+        if (wh < 2.5)
+          return { grade: "good", text: "파도가 강합니다. 중급자 이상 추천." };
+        return {
+          grade: "hard",
+          text: "파도가 거셉니다. 고수들 숏보드 챙기세요 ⚠️",
+        };
+      }
+
+      function getDiveGrade(wh, ws) {
+        if (wh === null)
+          return { grade: "unknown", text: "현장에서 직접 확인하세요." };
+        if (ws !== null && ws > 12)
+          return { grade: "hard", text: "강풍으로 입수가 위험합니다." };
+        if (wh <= 0.5)
+          return { grade: "great", text: "수면 잔잔. 스노클링·스쿠버 최적!" };
+        if (wh <= 1.0)
+          return {
+            grade: "good",
+            text: "입수 가능. 조류에 주의하며 활동하세요.",
+          };
+        if (wh <= 1.5)
+          return { grade: "okay", text: "숙련자 가능, 초보자는 주의 요망." };
+        return { grade: "hard", text: "너울이 커서 입수를 권장하지 않습니다." };
+      }
+
+      async function loadFC(name, data) {
+        if (!data) return;
+        mySpot = name;
+        localStorage.setItem("ita_my_spot", name);
+        initPresets();
+        $id("fcName").textContent = name;
+        $id("mySpotBadge").style.display = "inline-block";
+        setLoading();
+
+        const now = new Date();
+        try {
+          const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${data.lat}&longitude=${data.lon}&current=wave_height,wave_period&timezone=Asia%2FSeoul`;
+          const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${data.lat}&longitude=${data.lon}&current=temperature_2m,wind_speed_10m,weather_code&timezone=Asia%2FSeoul`;
+
+          const [marineRes, forecastRes] = await Promise.all([
+            fetch(marineUrl),
+            fetch(forecastUrl),
+          ]);
+          const marineJson = await marineRes.json();
+          const forecastJson = await forecastRes.json();
+
+          const wh = marineJson.current?.wave_height ?? null;
+          const per = marineJson.current?.wave_period ?? null;
+          const ws = forecastJson.current?.wind_speed_10m ?? null;
+          const temp = forecastJson.current?.temperature_2m ?? null;
+          const wcode = forecastJson.current?.weather_code ?? null;
+
+          function wmoIcon(code) {
+            if (code === null) return "—";
+            if (code <= 1) return "☀️";
+            if (code <= 3) return "⛅";
+            if (code <= 49) return "🌫️";
+            if (code <= 69) return "🌧️";
+            if (code <= 79) return "❄️";
+            if (code <= 99) return "⛈️";
+            return "🌊";
+          }
+
+          $id("fcWH").textContent =
+            wh !== null ? wh.toFixed(1) + "m" : "정보 없음";
+          $id("fcPer").textContent =
+            per !== null ? per.toFixed(0) + "초" : "정보 없음";
+          $id("fcWnd").textContent =
+            ws !== null ? ws.toFixed(1) + "m/s" : "정보 없음";
+          $id("fcWIcon").textContent = wmoIcon(wcode);
+          $id("fcTemp").textContent =
+            temp !== null ? Math.round(temp) + "°C" : "—";
+          $id("fcUpd").textContent =
+            "실측 데이터 · " +
+            now.toLocaleTimeString("ko-KR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }) +
+            "기준";
+
+          const surf = getSurfGrade(wh);
+          $id("badgeSurf").textContent =
+            surf.grade === "great"
+              ? "최고"
+              : surf.grade === "good"
+              ? "좋음"
+              : "어려움";
+          $id("badgeSurf").className =
+            "act-badge " + (surf.grade === "unknown" ? "" : surf.grade);
+          $id("descSurf").textContent = surf.text;
+
+          const dive = getDiveGrade(wh, ws);
+          const diveBadgeMap = {
+            great: "최적",
+            good: "좋음",
+            okay: "주의",
+            hard: "어려움",
+            unknown: "알 수 없음",
+          };
+          $id("badgeDive").textContent = diveBadgeMap[dive.grade] || "—";
+          $id("badgeDive").className =
+            "act-badge " +
+            (dive.grade === "unknown" || dive.grade === "okay"
+              ? "good"
+              : dive.grade);
+          $id("descDive").textContent = dive.text;
+
+          let eClass, eIcon, eTitle, eDesc;
+          if (ws !== null && ws > 10) {
+            eClass = "alert";
+            eIcon = "💨";
+            eTitle = "강풍 — 해변 활동 주의";
+            eDesc =
+              "바람이 강해 쓰레기가 밀려오기 쉽습니다. 플로깅이 절실합니다!";
+          } else if (wcode >= 50) {
+            eClass = "alert";
+            eIcon = "⚠️";
+            eTitle = "부유 쓰레기 경보";
+            eDesc = "비로 인해 해변에 쓰레기가 많이 유입되었을 수 있습니다.";
+          } else if (wh !== null && wh < 0.8) {
+            eClass = "clean";
+            eIcon = "✅";
+            eTitle = "잔잔한 바다 — 활동하기 좋은 날";
+            eDesc =
+              "파고가 낮아 해변 줍깅이나 다이빙으로 쓰레기 건지기 딱 좋습니다.";
+          } else {
+            eClass = "caution";
+            eIcon = "🌊";
+            eTitle = "봉투 하나 챙기기 좋은 날";
+            eDesc = "활동 마치고 나오는 길에 비닐 하나만 건져주세요.";
+          }
+          const banner = $id("ecoBanner");
+          banner.className = "eco-banner " + eClass;
+          $id("ecoIcon").textContent = eIcon;
+          $id("ecoTitle").textContent = eTitle;
+          $id("ecoDesc").textContent = eDesc;
+        } catch (err) {
+          ["fcWH", "fcPer", "fcWnd", "fcWIcon"].forEach((id) => {
+            const el = $id(id);
+            if (el) el.textContent = "연결 실패";
+          });
+          $id("fcTemp").textContent = "—";
+          $id("fcUpd").textContent =
+            "네트워크 오류. 잠시 후 다시 시도해 주세요.";
+        }
+      }
+      loadFC(mySpot, BEACHES[mySpot]);
+
+      /* 📸 인스타 공유용 캡처 기능 */
+      function captureForecast() {
+        const btn = $id("btnCapture");
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "⏳ 캡처 준비 중...";
+
+        const card = document.getElementById("fcCard");
+
+        html2canvas(card, {
+          backgroundColor: "#0b1929",
+          scale: 2,
+          useCORS: true,
+        })
+          .then((canvas) => {
+            const link = document.createElement("a");
+            link.download = `itaseoul_forecast_${new Date().getTime()}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+
+            btn.innerHTML = "✅ 저장 완료! 인스타에 공유해보세요";
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+            }, 3000);
+          })
+          .catch((err) => {
+            console.error(err);
+            alert("이미지 생성에 실패했습니다. 다시 시도해 주세요.");
+            btn.innerHTML = originalText;
+          });
+      }
+
+      /* ════ 크루 룩북 ════ */
+      const LOOKBOOK_DB = [
+        {
+          src: "1-1.jpg",
+          loc: "제주 용담해변",
+          crew: "🤿 겟잇다이브",
+        },
+        {
+          src: "2-1.jpg",
+          loc: "제주 평대리해변",
+          crew: "🤿 제주좀녀",
+        },
+        {
+          src: "3-1.jpg",
+          loc: "강원 어달항해변",
+          crew: "🤿 Sea.P.R",
+        },
+      ];
+      $id("lookbookGrid").innerHTML = LOOKBOOK_DB.map(
+        (item) => `
+  <div class="lb-card">
+    <img src="${item.src}" alt="${item.loc}" loading="lazy"/>
+    <div class="lb-overlay">
+      <div class="lb-loc">📍 ${item.loc}</div>
+      <div class="lb-crew">${item.crew}</div>
+    </div>
+  </div>`
+      ).join("");
+
+      /* ════ 스팟 렌더링 ════ */
+      const SPOT_DB = [
+        {
+          name: "제주 협재해수욕장",
+          region: "제주",
+          status: "taken",
+          owner: "블루다이브 팀",
+          desc: "이달의 우수 크루 블루다이브 팀이 돌보고 있는 해변입니다.",
+          itaCityUrl: "https://itacity.org/group/sample1",
+          urgency: "low",
+        },
+        {
+          name: "양양 죽도해변",
+          region: "동해",
+          status: "available",
+          owner: "",
+          desc: "가을 스웰 시즌 최고의 서핑 스팟. 가장 먼저 입양해 보세요.",
+          itaCityUrl: "",
+          lastCare: 14,
+          urgency: "high",
+        },
+        {
+          name: "선녀바위 해변",
+          region: "서해",
+          status: "taken",
+          owner: "이타서울 크루",
+          desc: "이타서울과 함께 2년간 1,200개의 쓰레기를 수거한 상징적인 곳.",
+          itaCityUrl: "https://itacity.org/group/sample2",
+          urgency: "low",
+        },
+        {
+          name: "포항 신항만",
+          region: "동해",
+          status: "available",
+          owner: "",
+          desc: "갯바위 낚시와 서핑이 공존하는 매력적인 곳. 로컬 크루의 손길이 필요합니다.",
+          itaCityUrl: "",
+          lastCare: 20,
+          urgency: "high",
+        },
+      ];
+      $id("spotsList").innerHTML = SPOT_DB.map((s) => {
+        const isAvail = s.status === "available";
+        const urgencyHtml =
+          s.urgency === "high"
+            ? `<div style="color: #e87070; font-size: 0.75rem; margin-bottom: 8px; font-weight: 700;">🚨 방치 경고: 마지막 방문 ${s.lastCare}일 전 (돌봄 시급)</div>`
+            : "";
+
+        return `<div class="spot-card ${s.status}">
+    <div class="spot-header">
+      <div><div class="spot-name">${s.name}</div><div class="spot-region">📍 ${
+          s.region
+        }</div></div>
+      ${
+        isAvail
+          ? `<span style="font-size:.7rem;padding:4px 10px;border-radius:12px;background:var(--foam);color:#000;font-weight:700">🚩 선점 가능</span>`
+          : `<span style="font-size:.7rem;padding:4px 10px;border-radius:12px;background:rgba(0,0,0,.3);color:var(--text-soft);">🔒 입양 완료</span>`
+      }
+    </div>
+    ${urgencyHtml}
+    <div class="spot-desc">${s.desc}</div>
+    ${
+      isAvail
+        ? `<a class="spot-cta" onclick="document.getElementById('crewModal').classList.add('open')">입양하기</a>`
+        : `<a href="${s.itaCityUrl}" target="_blank" class="spot-cta-itacity">🤝 이 크루와 해변정화하기 ↗</a>`
+    }
+  </div>`;
+      }).join("");
+
+      /* ════ 롤링페이퍼 티커 ════ */
+      const TICKER_MSGS = [
+        {
+          text: '"2년 동안 주운 수 많은 쓰레기, 이제야 네 진짜 얼굴이 보여."',
+          from: "인천 선녀바위해변 | 이타서울",
+        },
+        {
+          text: '"태종대 또 하나의 보석 태원자갈마당은 우리가 가꿉니다."',
+          from: "부산 태종대 태원 자갈마당  | 생태문화교육허브봄",
+        },
+        {
+          text: '"바다유리 3kg 수거 완료! 아이들에겐 예쁜 보석 찾기, 바다에겐 안전한 치료 시간이었어요 🏺"',
+          from: "충남 매바위공원해변 | 가치잇는그린 협동조합",
+        },
+        {
+          text: '"우리, 바다를 한 겹 걷어냈다"',
+          from: "인천 마시안해변 | 2030기후클럽",
+        },
+      ];
+      let tickerIdx = 0;
+      function playTicker() {
+        const ticker = $id("letterTicker");
+        const msg = TICKER_MSGS[tickerIdx % TICKER_MSGS.length];
+        $id("tickerText").textContent = msg.text;
+        $id("tickerFrom").textContent = `📍 ${msg.from}`;
+        ticker.classList.add("show");
+        setTimeout(() => {
+          ticker.classList.remove("show");
+          setTimeout(() => {
+            tickerIdx++;
+            playTicker();
+          }, 1000);
+        }, 5000);
+      }
+      setTimeout(playTicker, 1000);
+
+      /* ════ 하단 미니게임 로직 ════ */
+      let phase = 0,
+        dir = 1;
+      function gameLoop() {
+        phase += 0.008 * dir;
+        if (phase >= 1) {
+          phase = 1;
+          dir = -1;
+        } else if (phase <= 0) {
+          phase = 0;
+          dir = 1;
+        }
+        $id("gaugeFill").style.width = phase * 100 + "%";
+        requestAnimationFrame(gameLoop);
+      }
+      gameLoop();
+
+      function setMgTheme(theme) {
+        const mg = $id("minigame");
+        mg.className = "";
+        if (theme !== "night") mg.classList.add("theme-" + theme);
+        document
+          .querySelectorAll(".theme-btn")
+          .forEach((b) =>
+            b.classList.toggle("active", b.dataset.theme === theme)
+          );
+
+        const colors = {
+          day: { w1: "#1a6090", w2: "#155070", w3: "#0f3550" },
+          sunset: { w1: "#6b2040", w2: "#4a1830", w3: "#2a0e20" },
+          night: { w1: "#0e4a6e", w2: "#0a3a58", w3: "#071e30" },
+        };
+        const col = colors[theme];
+        document
+          .querySelectorAll("#minigame .wv1 path")
+          .forEach((p) => p.setAttribute("fill", col.w1));
+        document
+          .querySelectorAll("#minigame .wv2 path")
+          .forEach((p) => p.setAttribute("fill", col.w2));
+        document
+          .querySelectorAll("#minigame .wv3 path")
+          .forEach((p) => p.setAttribute("fill", col.w3));
+      }
+
+      // 오늘 그만보기 처리 (모달창 내부 연동)
+      function handleMgSkip(cb) {
+        if (cb.checked) {
+          localStorage.setItem("mg_skip_today", new Date().toDateString());
+          const sub = $id("mgSubText");
+          if (sub) sub.textContent = "타이밍을 맞춰 누르면 편지를 쓸 수 있어요";
+        } else {
+          localStorage.removeItem("mg_skip_today");
+          const sub = $id("mgSubText");
+          if (sub)
+            sub.textContent =
+              "타이밍에 맞춰 부유물을 건져내면 바다에 편지를 띄울 수 있어요 (화면 탭)";
+        }
+      }
+
+      // 최초 렌더링 시 로컬스토리지 체크
+      (function () {
+        const skip = localStorage.getItem("mg_skip_today");
+        if (skip === new Date().toDateString()) {
+          const cb = $id("mgSkipToday");
+          if (cb) cb.checked = true;
+          const sub = $id("mgSubText");
+          if (sub) sub.textContent = "타이밍을 맞춰 누르면 편지를 쓸 수 있어요";
+        }
+      })();
+
+      function handleMinigameClick(e) {
+        if (e.target.closest(".bottle-btn, .theme-btn")) return;
+
+        const pop = $id("resultPop");
+        if (phase >= 0.64 && phase <= 0.78) {
+          pop.innerHTML =
+            "유리병을 건졌어요! ✨<br><span style='font-size:0.8rem;font-weight:400;margin-top:8px;display:block;'>바다에 편지를 써보세요 💌</span>";
+          pop.style.color = "#5dcaa5";
+          pop.classList.remove("show");
+          void pop.offsetWidth;
+          pop.classList.add("show");
+
+          // 오늘 그만보기가 안 되어 있으면 팝업 노출
+          const skip = localStorage.getItem("mg_skip_today");
+          if (skip !== new Date().toDateString()) {
+            setTimeout(() => {
+              $id("letterModal").classList.add("open");
+            }, 1500);
+          }
+        } else {
+          pop.textContent = "앗, 부유물이 떠내려갔어요!";
+          pop.style.color = "#e87070";
+          pop.classList.remove("show");
+          void pop.offsetWidth;
+          pop.classList.add("show");
+        }
+      }
+      $id("minigame").addEventListener("click", handleMinigameClick);
+
+      /* ════ 편지 및 게시판 로직 ════ */
+      function submitLetter() {
+        const beach = $id("lBeach").value.trim() || "알 수 없는 해변";
+        const crew = $id("lCrew").value.trim() || "익명 크루";
+        const msg = $id("lMsg").value.trim();
+        if (!msg) {
+          alert("바다에 남길 한마디를 적어주세요!");
+          return;
+        }
+
+        TICKER_MSGS.unshift({ text: `"${msg}"`, from: `${beach} | ${crew}` });
+        $id("letterModal").classList.remove("open");
+        $id("lBeach").value = "";
+        $id("lCrew").value = "";
+        $id("lMsg").value = "";
+        tickerIdx = 0;
+        alert("💌 편지가 하늘로 띄워졌습니다. 위쪽 티커를 확인해보세요!");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function openMessageBoard(e) {
+        e.stopPropagation();
+        switchBoardTab("list");
+        renderMessageBoard();
+        $id("boardModal").classList.add("open");
+      }
+
+      function switchBoardTab(tab) {
+        const isWrite = tab === "write";
+        $id("boardListPane").style.display = isWrite ? "none" : "block";
+        $id("boardWritePane").style.display = isWrite ? "flex" : "none";
+        $id("tabList").style.background = isWrite
+          ? "rgba(255,255,255,.08)"
+          : "var(--teal)";
+        $id("tabList").style.color = isWrite ? "var(--text-soft)" : "#fff";
+        $id("tabWrite").style.background = isWrite
+          ? "var(--teal)"
+          : "rgba(255,255,255,.08)";
+        $id("tabWrite").style.color = isWrite ? "#fff" : "var(--text-soft)";
+      }
+
+      /* 스탬프(마일리지) 연동 */
+      let myCrewStamps = parseInt(
+        localStorage.getItem("ita_crew_stamps") || "0"
+      );
+
+      function submitBoardLetter() {
+        const beach = $id("bBeach").value.trim() || "알 수 없는 해변";
+        const crew = $id("bCrew").value.trim() || "익명 크루";
+        const msg = $id("bMsg").value.trim();
+        if (!msg) {
+          alert("바다에 남길 한마디를 적어주세요!");
+          return;
+        }
+
+        TICKER_MSGS.unshift({ text: `"${msg}"`, from: `${beach} | ${crew}` });
+
+        // 스탬프 카운트 증가 로직
+        myCrewStamps++;
+        localStorage.setItem("ita_crew_stamps", myCrewStamps);
+
+        alert(
+          `💌 기록이 바다에 남겨졌습니다!\n(현재 우리 크루 누적 기록: ${myCrewStamps}회)`
+        );
+
+        // 5회 달성 시 입양 제안 팝업
+        if (myCrewStamps === 5) {
+          setTimeout(() => {
+            alert(
+              "🎉 축하합니다!\n우리 크루의 애정 어린 기록이 5회 쌓였습니다.\n조만간 이타서울 매니저가 특별한 공식 반려해변 파트너십 제안을 드릴 예정입니다."
+            );
+          }, 500);
+        }
+
+        $id("bBeach").value = "";
+        $id("bCrew").value = "";
+        $id("bMsg").value = "";
+        tickerIdx = 0;
+        switchBoardTab("list");
+        renderMessageBoard();
+      }
+
+      function renderMessageBoard() {
+        $id("boardList").innerHTML = TICKER_MSGS.map(
+          (msg) => `
+    <div class="board-item">
+      <div class="board-text">${msg.text}</div>
+      <div class="board-from">- ${msg.from}</div>
+    </div>`
+        ).join("");
+      }
+
+      /* ════ 파도 소리 (웹 오디오 API) ════ */
+      let audioCtx = null,
+        waveNodes = null,
+        soundOn = false;
+      function buildWaveSound() {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const len = audioCtx.sampleRate * 4,
+          buf = audioCtx.createBuffer(2, len, audioCtx.sampleRate);
+        for (let ch = 0; ch < 2; ch++) {
+          const d = buf.getChannelData(ch);
+          for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+        }
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        const lp = audioCtx.createBiquadFilter();
+        lp.type = "lowpass";
+        lp.frequency.value = 520;
+        lp.Q.value = 0.9;
+        const hp = audioCtx.createBiquadFilter();
+        hp.type = "highpass";
+        hp.frequency.value = 65;
+        const lfo = audioCtx.createOscillator();
+        lfo.frequency.value = 0.11;
+        const lG = audioCtx.createGain();
+        lG.gain.value = 200;
+        lfo.connect(lG);
+        lG.connect(lp.frequency);
+        const m = audioCtx.createGain();
+        m.gain.setValueAtTime(0, audioCtx.currentTime);
+        m.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 2.5);
+        src.connect(lp);
+        lp.connect(hp);
+        hp.connect(m);
+        m.connect(audioCtx.destination);
+        src.start();
+        lfo.start();
+        return { src, lfo, m };
+      }
+      function toggleSound() {
+        const btn = $id("soundBtn");
+        if (!soundOn) {
+          waveNodes = buildWaveSound();
+          soundOn = true;
+          $id("soundIcon").textContent = "🔊";
+          btn.classList.add("playing");
+          btn.style.opacity = "1";
+          btn.style.borderColor = "rgba(125,211,200,.5)";
+        } else {
+          waveNodes.m.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+          const n = waveNodes;
+          setTimeout(() => {
+            try {
+              n.src.stop();
+              n.lfo.stop();
+            } catch (e) {}
+          }, 1100);
+          waveNodes = null;
+          soundOn = false;
+          $id("soundIcon").textContent = "🔇";
+          btn.classList.remove("playing");
+          btn.style.opacity = ".7";
+          btn.style.borderColor = "rgba(125,211,200,.2)";
+        }
+      }
+    </script>
+  </body>
+</html>
